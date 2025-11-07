@@ -1,341 +1,1102 @@
-a
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Privado</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compuya - Catálogo Dinámico de Combos</title>
+    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de la fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        /* Estilos personalizados para el tema oscuro y efectos */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a2e;
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #111827;
+            /* Fondo oscuro principal */
+            padding: 0.75rem 0;
             margin: 0;
-            padding: 1rem;
         }
-        .container {
-            background-color: #2a2a4a;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 600px;
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
-        .header {
-            background-color: #16162a;
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 2px solid #3a3a5a;
+
+        .sr-only.focus:not(.sr-only) {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: inherit;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
         }
-        .chat-area {
-            flex-grow: 1;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            max-height: 70vh;
-            gap: 0.75rem;
+
+        .container-center {
+            /* Mantiene la adaptabilidad móvil y centra el contenido */
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 0.25rem;
         }
-        .message-box {
-            background-color: #3a3a5a;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        .message-box.mine {
-            background-color: #5b21b6;
-            align-self: flex-end;
-        }
-        .message-box.other {
-            background-color: #4338ca;
-            align-self: flex-start;
-        }
-        .sender {
-            font-size: 0.8rem;
-            color: #a0a0b0;
-            margin-bottom: 0.25rem;
-        }
-        .input-area {
-            display: flex;
-            padding: 1rem;
-            border-top: 2px solid #3a3a5a;
-            background-color: #2a2a4a;
-        }
-        .input-area input {
-            flex-grow: 1;
-            background-color: #1a1a2e;
-            border: 1px solid #4a4a6a;
-            border-radius: 0.75rem;
-            padding: 0.75rem;
-            color: white;
-            outline: none;
-        }
-        .input-area button {
-            background-color: #6d28d9;
-            color: white;
-            font-weight: bold;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            margin-left: 0.5rem;
+
+        .product-card {
+            /* Efecto de levitación y sombra al pasar el ratón */
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-        .input-area button:hover {
-            background-color: #5b21b6;
+
+        .product-card:hover,
+        .product-card:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 200, 255, 0.2);
+            border-color: #06b6d4;
+            /* Color cian de Tailwind para el borde en hover */
+            outline: 2px solid #06b6d4;
         }
-        .form-area {
-            padding: 2rem;
-            text-align: center;
-        }
-        .form-area input {
-            background-color: #1a1a2e;
-            border: 1px solid #4a4a6a;
-            border-radius: 0.75rem;
-            padding: 0.75rem;
-            color: white;
+
+        /* Estilos para el Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
             width: 100%;
-            max-width: 300px;
-            margin-bottom: 1rem;
-            outline: none;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
-        .form-area button {
-            background-color: #4338ca;
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 95%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-button {
+            font-size: 2.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #4b5563;
+        }
+
+        .promo-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #f87171;
+            /* Rojo Tailwind 500 */
             color: white;
             font-weight: bold;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0 0.75rem 0 0.75rem;
+            z-index: 10;
+        }
+
+        .benefit-card {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             border-radius: 0.75rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-        .form-area button:hover {
-            background-color: #312e81;
+
+        .benefit-card:hover {
+            transform: translateY(-2px);
         }
-        .error-message {
-            color: #fca5a5;
-            margin-top: 1rem;
+
+        @media (max-width: 640px) {
+            .benefit-card {
+                padding: 0.75rem;
+                margin: 0.25rem 0;
+            }
         }
-        .user-id-display {
-            font-size: 0.8rem;
-            color: #a0a0b0;
-            text-align: center;
-            padding: 0.5rem 0;
-            word-break: break-all;
+
+        /* Mejoras para móvil */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem 0;
+            }
+
+            .container-center {
+                padding: 0;
+            }
+
+            .product-card {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .product-card img {
+                height: 100px;
+            }
+
+            .product-card h3 {
+                font-size: 0.875rem;
+            }
+
+            .product-card button {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .detail-view-mobile {
+                padding: 0.75rem;
+            }
+
+            .customization-section {
+                padding: 0.75rem;
+            }
+
+            .customization-section h4 {
+                font-size: 1rem;
+            }
+
+            .price-display {
+                font-size: 1.25rem;
+            }
+
+            /* Reducir tamaños de fuente en header y títulos principales */
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            #dynamic-title {
+                font-size: 1.25rem;
+            }
+
+            /* Ajustes en vista de detalle */
+            #product-detail-content h1 {
+                font-size: 1.5rem;
+            }
+
+            #final_offer_price {
+                font-size: 2rem;
+            }
+
+            #local_final_offer_price {
+                font-size: 1.5rem;
+            }
+
+            /* Botones en detalle */
+            .wa-button-detail {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+
+            #custom-wa-button {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+
+            /* Beneficios y modal */
+            .benefit-card h3 {
+                font-size: 0.875rem;
+            }
+
+            .benefit-card p {
+                font-size: 0.75rem;
+            }
+
+            .modal-content h3 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content p {
+                font-size: 0.875rem;
+            }
+
+            .modal-content ul li {
+                font-size: 0.75rem;
+            }
+
+            /* Asegurar centrado y evitar desbordamientos */
+            .container-center {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            /* Ajustes en grid para mejor alineación */
+            #catalog-view {
+                gap: 0.5rem;
+            }
+
+            #beneficios-section h2 {
+                font-size: 1.25rem;
+            }
+
+            /* Evitar desbordamiento en precios de la vista de detalle */
+            #product-detail-content .text-4xl {
+                font-size: 1.25rem;
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
+
+            #product-detail-content .text-xl {
+                font-size: 0.875rem;
+            }
+
+            #product-detail-content .text-lg {
+                font-size: 0.75rem;
+            }
+
+            /* Ajustes adicionales para precios en móvil */
+            #final_offer_price {
+                font-size: 1rem !important;
+            }
+
+            #local_final_offer_price {
+                font-size: 0.875rem !important;
+            }
+
+            #local_final_price_display {
+                text-align: left !important;
+            }
+
+            #product-detail-specs li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            /* Ajustes en botones y elementos para evitar overflow */
+            .wa-button-detail,
+            #custom-wa-button {
+                font-size: 0.875rem !important;
+                padding: 0.5rem !important;
+            }
+
+            /* Ajustes en especificaciones técnicas */
+            #product-detail-specs li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #product-detail-specs li span:last-child {
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
         }
     </style>
 </head>
-<body>
 
-    <div id="app" class="container">
-        <!-- Contenido de la aplicación -->
+<body class="bg-gray-900 text-gray-100">
+    <a href="#main-content"
+        class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white p-2 z-50">Saltar
+        al contenido principal</a>
+    <div class="container-center">
+        <!-- HERO SECTION -->
+        <header id="main-header"
+            class="bg-gradient-to-br from-blue-700 to-teal-500 text-white p-4 md:p-6 rounded-2xl shadow-2xl mb-6 text-center transform hover:scale-[1.01] transition duration-300">
+            <!-- Placeholder para el Logo -->
+            <img src="https://placehold.co/200x50/111827/ffffff?text=Compuya"
+                alt="Logo de Compuya, tienda de computadoras" class="mx-auto h-12 mb-4 rounded-lg shadow-md" />
+            <!-- TITULO PRINCIPAL -->
+            <h1 class="text-2xl md:text-4xl font-extrabold mb-4 tracking-tight">Actualiza tu PC Hoy: Potencia y
+                Velocidad Garantizada</h1>
+            <!-- SUBTITULO DE PROMOCION -->
+            <p
+                class="text-lg md:text-xl font-bold text-yellow-300 bg-black bg-opacity=30 inline-block px-4 py-2 rounded-full border-2 border-yellow-400">
+                ¡Últimos Días! 10% DE DESCUENTO por Contado o Transferencia
+            </p>
+        </header>
+
+        <!-- CUERPO PRINCIPAL -->
+        <main id="main-content">
+            <!-- TITULO DEL CATÁLOGO -->
+            <h2 id="dynamic-title" class="text-2xl md:text-4xl font-extrabold text-center mb-10 text-cyan-400">🔥 Los
+                Mejores Combos Calidad-Precio del Mercado 🔥</h2>
+
+            <!-- VISTA DE CATÁLOGO (Grid en 2 columnas para que se vean cuadrados) -->
+            <div id="catalog-view" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+            </div>
+
+            <!-- Vista de Detalle (Inicialmente oculta) -->
+            <div id="detail-view"
+                class="hidden bg-white p-4 md:p-6 lg:p-10 rounded-xl shadow-2xl border border-gray-100 text-gray-900 detail-view-mobile">
+                <button onclick="showCatalogView()"
+                    class="flex items-center text-blue-600 hover:text-blue-800 font-semibold mb-4 md:mb-6 transition duration-150 text-base md:text-lg">
+                    <!-- Icono de Flecha Atrás -->
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Volver a los Combos
+                </button>
+                <div id="product-detail-content" class="flex flex-col lg:flex-row lg:space-x-10">
+                    <!-- Contenido del detalle cargado por JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- SECCIÓN DE BENEFICIOS -->
+        <section id="beneficios-section" class="mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-cyan-400 mb-4">¿Por qué elegir Compuya?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Entrega -->
+                <div class="benefit-card">
+                    <h3 class="text-lg font-bold text-teal-400 mb-2 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Entrega a Domicilio
+                    </h3>
+                    <p class="text-gray-200 text-sm">Entregamos a domicilio y dejamos todo instalado <strong
+                            class="text-yellow-200">sin costo</strong>.</p>
+                </div>
+                <!-- Pago Seguro -->
+                <div class="benefit-card">
+                    <h3 class="text-lg font-bold text-teal-400 mb-2 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Pago Seguro
+                    </h3>
+                    <p class="text-gray-200 text-sm">¡Pagas solo cuando recibes, revisas y apruebas tu computadora! No
+                        pedimos seña ni adelanto.</p>
+                </div>
+                <!-- Opciones de Pago -->
+                <div class="benefit-card">
+                    <h3 class="text-lg font-bold text-teal-400 mb-2 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                            </path>
+                        </svg>
+                        Opciones de Pago
+                    </h3>
+                    <ul class="text-gray-200 text-sm space-y-1">
+                        <li><span class="text-red-400 font-bold">10% OFF:</span> Contado / Transferencia</li>
+                        <li><strong class="text-yellow-300">3 Cuotas SIN INTERÉS</strong> con tarjetas</li>
+                        <li>Efectivo al recibir</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Garantía -->
+            <div class="benefit-card mt-4">
+                <details class="text-center">
+                    <summary
+                        class="text-xl font-bold text-teal-400 cursor-pointer hover:text-teal-300 transition duration-200 mb-4">
+                        Garantía Total (Haz clic para expandir)</summary>
+                    <div class="p-3 bg-gray-700 rounded-lg shadow-inner text-center">
+                        <button id="openWarrantyModal"
+                            class="w-full font-bold text-xl text-emerald-400 hover:text-emerald-300 flex items-center justify-center focus:outline-none transition duration-200 group"
+                            aria-label="Abrir modal de garantía">
+                            <!-- Icono de Check en Círculo -->
+                            <svg class="w-6 h-6 mr-2 group-hover:rotate-12 transition duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Garantía de 3 Meses
+                        </button>
+                        <p class="mt-2 text-sm text-gray-300">
+                            Todas nuestras computadoras usadas incluyen <strong class="text-yellow-400">3 meses de
+                                garantía por escrito</strong>. Haz clic para ver detalles.
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Modal de Garantía -->
+    <div id="warrantyModal" class="modal" onclick="closeWarrantyModal(event)">
+        <div class="modal-content relative text-gray-900" onclick="event.stopPropagation()">
+            <!-- Botón de Cierre -->
+            <span class="close-button absolute top-4 right-6 text-gray-400 hover:text-gray-900"
+                onclick="closeWarrantyModal(event)">&times;</span>
+            <h3 class="text-3xl font-bold text-emerald-600 mb-4 border-b pb-2">Garantía Escrita (3 Meses)</h3>
+            <p class="mb-4 text-lg">Tu tranquilidad es lo más importante. Ofrecemos 3 meses completo de garantía por
+                escrito en todas nuestras computadoras usadas (CPU) por cualquier falla de hardware no causada por el
+                usuario.</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong class="font-semibold">Cobertura:</strong> Placa madre, procesador, memoria RAM, disco duro
+                    (HDD/SSD).</li>
+                <li><strong class="font-semibold">Exclusiones:</strong> Monitores, periféricos (teclado, mouse, etc.),
+                    fallas de software, virus o daños físicos/líquidos causados por el cliente.</li>
+                <li><strong class="font-semibold">Proceso:</strong> Si tienes un problema, nos contactas y gestionamos
+                    el retiro para reparación o reemplazo.</li>
+            </ul>
+            <button
+                class="mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-200"
+                onclick="closeWarrantyModal()">Entendido</button>
+        </div>
+    </div>
 
-        // Global variables for Firebase configuration, provided by the Canvas environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    <script>
+        // Referencias a los elementos del DOM principales
+        const mainHeader = document.getElementById('main-header');
+        const keyInfoSection = document.getElementById('beneficios-section');
+        const catalogView = document.getElementById('catalog-view');
+        const detailView = document.getElementById('detail-view');
+        const productDetailContent = document.getElementById('product-detail-content');
+        const dynamicTitle = document.getElementById('dynamic-title');
+        const warrantyModal = document.getElementById('warrantyModal');
+        const openWarrantyModalBtn = document.getElementById('openWarrantyModal');
 
-        let app, db, auth;
-        let userId = null;
-        const appDiv = document.getElementById('app');
-        let currentKey = '';
-        let currentChatDocRef = null;
+        // Número de WhatsApp (ACTUALIZADO)
+        const WHATSAPP_NUMBER = "5491159980227";
 
-        // Renders a generic error message.
-        const renderError = (message) => {
-            appDiv.innerHTML = `<p class="error-message text-center p-8">${message}</p>`;
+        // Costos de las mejoras en valores numéricos enteros
+        const UPGRADE_COSTS = {
+            SSD_128: 25000,
+            SSD_256: 38000,
+            MONITOR_19: 20000
         };
 
-        // Initializes Firebase and handles user authentication.
-        const initializeFirebase = async () => {
-            try {
-                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
-                    renderError("Error: La configuración de Firebase no está disponible. Por favor, asegúrate de que el entorno la proporcione.");
-                    return;
-                }
-                
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+        // Helper functions para manejar precios (quitar puntos, formatear con puntos)
+        function formatPrice(number) {
+            if (typeof number !== 'number' || isNaN(number)) return "Precio Inválido";
+            // Formatea con separador de miles (ej: 360000 -> 360.000)
+            return number.toLocaleString('es-AR').replace(/,/g, '.');
+        }
 
-                // Authenticate user with custom token or anonymously.
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
+        // Define una lista de IDs de combos que usan procesadores Core2Duo
+        const CORE2DUO_IDS = [1, 2];
+
+
+        // Array de productos. Precios PROMO NOVIEMBRE - Contado o Transferencia exactos.
+        const products = [
+            // Combo 1 y 2 son Core2Duo (usan Win 10 por default)
+            { id: 1, title: "Combo 001 (4GB)", basePrice: 136111, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/1.png", description: "El combo más económico, perfecto para tareas básicas como navegar por internet, usar redes sociales y trabajos escolares o de oficina livianos. Viene listo para usar con todo el software instalado.", specs: [{ name: "Procesador", value: "Intel Core2Duo" }, { name: "Monitor", value: "17 pulgadas" }, { name: "Memoria RAM", value: "4GB" }, { name: "Disco", value: "500GB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 10" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            { id: 2, title: "Combo 003 (8GB)", basePrice: 172778, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/2.png", description: "Un salto en fluidez. Con 8GB de RAM, este combo es ideal para multitarea, manejar múltiples pestañas del navegador, estudiar online y usar programas intermedios de manera cómoda.", specs: [{ name: "Procesador", value: "Intel Core2Duo" }, { name: "Monitor", value: "17 pulgadas" }, { name: "Memoria RAM", value: "8GB" }, { name: "Disco", value: "500GB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 10" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            // Combos 3, 4, 5, 6, 7 son i3/i5
+            { id: 3, title: "Combo 019", basePrice: 222778, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/3.png", description: "Potencia superior con procesador Intel i3. Excelente para quienes necesitan mayor velocidad de procesamiento y un rendimiento fiable para el trabajo y entretenimiento diario. Máximo valor por tu dinero.", specs: [{ name: "Procesador", value: "Intel i3" }, { name: "Monitor", value: "17 Pulgadas" }, { name: "Memoria RAM", value: "8GB" }, { name: "Disco", value: "500GB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 10" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            { id: 4, title: "Combo 020", basePrice: 245000, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/4.png", description: "La mejor opción para el usuario avanzado. Los 16GB de RAM eliminan los cuellos de botella al trabajar con muchas aplicaciones abiertas, edición ligera o máquinas virtuales. Máxima fluidez garantizada.", specs: [{ name: "Procesador", value: "Intel i3" }, { name: "Monitor", value: "17 Pulgadas" }, { name: "Memoria RAM", value: "16GB" }, { name: "Disco", value: "500GB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 11" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            { id: 5, title: "Combo 029", basePrice: 233889, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/5.png", description: "Potencia de Intel i5 para profesionales y estudiantes. Maneja software más demandante, bases de datos y tareas de diseño con facilidad. Incluye la última versión de Windows.", specs: [{ name: "Procesador", value: "Intel i5" }, { name: "Monitor", value: "17 pulgadas" }, { name: "Memoria RAM", value: "8GB" }, { name: "Disco", value: "500GB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 11" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            { id: 6, title: "Combo 030", basePrice: 256111, imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/6.png", description: "El combo de más alto rendimiento, diseñado para quienes no aceptan compromisos. Con 16GB de RAM y un procesador i5, es la máquina definitiva para multitarea intensa, desarrollo o edición multimedia. Gran almacenamiento.", specs: [{ name: "Procesador", value: "Intel i5" }, { name: "Monitor", value: "17 Pulgadas" }, { name: "Memoria RAM", value: "16GB" }, { name: "Disco", value: "1TB" }, { name: "Accesorios", value: "Teclado y mouse" }, { name: "Software", value: "Windows 11" }, { name: "Paquete Office", value: "completo" }, { name: "Garantia", value: "3 Meses de garantia" }] },
+            {
+                id: 7,
+                title: "Combo 031 (16GB/SSD)",
+                basePrice: 300556,
+                imageUrl: "https://raw.githubusercontent.com/arielg86/compuya/main/7.png",
+                description: "Configuración Premium enfocada en la velocidad extrema. Arranca en segundos y carga aplicaciones instantáneamente gracias a su SSD de 256GB ultra rápido. Ideal para profesionales y usuarios que exigen el mejor rendimiento en un monitor de 19 pulgadas.",
+                specs: [
+                    { name: "Procesador", value: "Intel i5" },
+                    { name: "Monitor", value: "19 Pulgadas" },
+                    { name: "Memoria RAM", value: "16GB" },
+                    { name: "Disco", value: "SSD: 256GB" },
+                    { name: "Accesorios", value: "Teclado y mouse" },
+                    { name: "Software", value: "Windows 11" },
+                    { name: "Paquete Office", value: "completo" },
+                    { name: "Garantia", value: "3 Meses de garantia" }
+                ]
+            }
+        ];
+
+        /**
+         * Abre el modal de garantía.
+         */
+        function openWarrantyModal(event) {
+            if (event && event.stopPropagation) {
+                event.stopPropagation();
+            }
+            warrantyModal.classList.add('show');
+        }
+
+        /**
+         * Cierra el modal de garantía.
+         */
+        function closeWarrantyModal(event) {
+            // Cierra si se hace clic en el fondo oscuro
+            if (event && event.target && event.target === warrantyModal) {
+                warrantyModal.classList.remove('show');
+                return;
+            }
+            // Cierra si se hace clic en el botón de cierre (x) o "Entendido"
+            if (event && (event.target.className.includes('close-button') || event.target.tagName === 'BUTTON' && event.target.textContent === 'Entendido')) {
+                warrantyModal.classList.remove('show');
+                return;
+            }
+        }
+
+        /**
+         * Abre WhatsApp con un mensaje predefinido para el producto.
+         * @param {string} message - Mensaje a enviar.
+         */
+        function openWhatsApp(message) {
+            // Usa el número de WhatsApp actualizado
+            const phoneNumber = WHATSAPP_NUMBER;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+        }
+
+        // Asigna el evento al botón de garantía
+        openWarrantyModalBtn.onclick = openWarrantyModal;
+        warrantyModal.onclick = closeWarrantyModal;
+
+
+        /**
+         * Actualiza la lista de especificaciones técnicas en el detalle del producto,
+         * incluyendo la actualización de Windows si aplica.
+         * @param {Object} product - Objeto del producto base.
+         * @param {string} diskSpec - Especificación actual del disco.
+         * @param {string} monitorSpec - Especificación actual del monitor.
+         * @param {string} softwareSpec - Especificación actual del software.
+         */
+        function updateSpecsTable(product, diskSpec, monitorSpec, softwareSpec) {
+            const specsListElement = document.getElementById('product-detail-specs');
+            if (!specsListElement) return;
+
+            // Creamos una copia de las especificaciones base para modificarlas
+            const updatedSpecs = [...product.specs];
+
+            // Helper para encontrar y actualizar un spec
+            const updateSpec = (name, value) => {
+                const index = updatedSpecs.findIndex(s => s.name === name);
+                if (index !== -1) {
+                    updatedSpecs[index].value = value;
                 } else {
-                    await signInAnonymously(auth);
+                    updatedSpecs.push({ name: name, value: value });
                 }
+            };
 
-                userId = auth.currentUser?.uid || crypto.randomUUID();
-                renderForm();
-            } catch (e) {
-                console.error("Error al inicializar Firebase o al autenticar:", e);
-                renderError("Hubo un error al iniciar el chat. Por favor, intenta de nuevo más tarde. (auth/invalid-api-key)");
+            // 1. Actualizar Disco
+            updateSpec("Disco", diskSpec);
+
+            // 2. Actualizar Monitor
+            updateSpec("Monitor", monitorSpec);
+
+            // 3. Actualizar Software
+            updateSpec("Software", softwareSpec);
+
+
+            // 4. Generar el nuevo HTML de la lista
+            specsListElement.innerHTML = updatedSpecs.map(spec => {
+                // Determina si esta especificación fue personalizada o es destacable
+                const isDiskCustom = spec.name === "Disco" && (spec.value.includes("SSD"));
+                const isMonitorCustom = spec.name === "Monitor" && spec.value.includes('19"');
+                const isSoftwareCustom = spec.name === "Software" && spec.value.includes("Win 11");
+
+                const highlightClass = (isDiskCustom || isMonitorCustom || isSoftwareCustom)
+                    ? 'bg-yellow-100 border-yellow-300' : 'bg-gray-50 border-gray-100';
+
+                return `
+                    <li class="flex flex-col sm:flex-row justify-between p-3 rounded-lg shadow-sm border ${highlightClass} text-sm md:text-base">
+                        <span class="font-medium text-gray-500">${spec.name}:</span>
+                        <span class="font-bold text-gray-800">${spec.value}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Calcula el precio final basado en las selecciones de mejora del usuario.
+         * Actualiza los precios, el botón de WhatsApp y las especificaciones.
+         * @param {Object} product - Objeto del producto base.
+         */
+        function calculateFinalPrice(product) {
+            const detailDiv = document.getElementById('detail-view');
+            if (!detailDiv) return;
+
+            // Precio base de partida (Oferta con 10% OFF para Contado, y Base para Cuotas)
+            let currentBasePriceOffer = Math.round(product.basePrice * 0.9);
+            let currentBasePriceCuotas = product.basePrice;
+
+            // Buscar valores base de specs
+            let diskSpec = product.specs.find(s => s.name === "Disco")?.value || "500 GB HDD";
+            let monitorSpec = product.specs.find(s => s.name === "Monitor")?.value || '17" LCD';
+            // Obtener el Software base (ej. "Win 10, Office completo y Antivirus")
+            let softwareSpec = product.specs.find(s => s.name === "Software")?.value || "Software Base";
+
+            let upgradesDescription = [];
+            let diskUpgradeCost = 0;
+            let isSsdSelected = false; // Bandera para la lógica de Win 11
+
+            // 1. Obtener Mejora de Disco
+            const diskSelected = detailDiv.querySelector('input[name="disk_upgrade"]:checked');
+            if (diskSelected && diskSelected.value !== 'none') {
+                isSsdSelected = true;
+                if (diskSelected.value === 'ssd_128') {
+                    diskUpgradeCost = UPGRADE_COSTS.SSD_128;
+                    diskSpec = '128 GB SSD (¡Arranca en Segundos!)';
+                    upgradesDescription.push("Disco: SSD 128GB");
+                } else if (diskSelected.value === 'ssd_256') {
+                    diskUpgradeCost = UPGRADE_COSTS.SSD_256;
+                    diskSpec = '256 GB SSD (Máxima Velocidad)';
+                    upgradesDescription.push("Disco: SSD 256GB");
+                }
             }
-        };
-        
-        // Renders the initial form to enter the chat key.
-        const renderForm = () => {
-            appDiv.innerHTML = `
-                <div class="form-area">
-                    <h1 class="text-3xl font-bold mb-4">Chat Privado</h1>
-                    <p class="mb-4 text-sm text-gray-400">Para iniciar o unirte a un chat, ingresa una palabra clave.</p>
-                    <input type="text" id="chat-key" placeholder="Ingresa la palabra clave" class="rounded-lg px-4 py-2 w-full text-center">
-                    <button id="join-chat-btn" class="mt-4">Unirse al Chat</button>
-                    <div class="user-id-display">ID de usuario: <span id="user-id-text">${userId}</span></div>
-                    <p id="error-message" class="error-message"></p>
-                </div>
-            `;
-            document.getElementById('join-chat-btn').addEventListener('click', handleJoinChat);
-        };
 
-        // Renders the main chat interface.
-        const renderChat = () => {
-            appDiv.innerHTML = `
-                <div class="header">
-                    <h2 class="text-2xl font-bold">Chat: ${currentKey}</h2>
-                    <div class="user-id-display">ID de usuario: <span id="user-id-text">${userId}</span></div>
+            // 2. Lógica de Actualización de Software (Windows 11)
+            // SI el combo NO es Core2Duo Y se seleccionó SSD
+            const isCore2Duo = CORE2DUO_IDS.includes(product.id);
+            if (!isCore2Duo && isSsdSelected) {
+                // Actualiza la especificación de software a Win 11 si es i3/i5 y lleva SSD
+                softwareSpec = "Win 11 (Actualizado por SSD), Office completo y Antivirus";
+            } else {
+                // Si no aplica, se mantiene el software original del producto
+                softwareSpec = product.specs.find(s => s.name === "Software")?.value || "Software Base";
+            }
+
+
+            // 3. Obtener Mejora de Monitor
+            const monitorCheckbox = detailDiv.querySelector('#monitor_upgrade');
+            let monitorUpgradeCost = 0;
+            if (monitorCheckbox && monitorCheckbox.checked) {
+                monitorUpgradeCost = UPGRADE_COSTS.MONITOR_19;
+                monitorSpec = '19" LCD (Mejora de Tamaño)';
+                upgradesDescription.push("Monitor: 19\"");
+            } else {
+                // Si no se selecciona, se mantiene la spec original del monitor
+                upgradesDescription.push(monitorSpec);
+            }
+
+            // 4. Calcular Precios Finales
+            const finalPriceOffer = currentBasePriceOffer + diskUpgradeCost + monitorUpgradeCost;
+            const finalPriceCuotas = currentBasePriceCuotas + diskUpgradeCost + monitorUpgradeCost;
+            // Redondeamos para evitar decimales en la cuota
+            const finalCuotaValue = Math.round(finalPriceCuotas / 3);
+
+            // 5. Actualizar UI de Precios
+            // Elementos de la cabecera (arriba)
+            const priceOfferElement = detailDiv.querySelector('#final_offer_price');
+            const priceCuotasElement = detailDiv.querySelector('#final_cuotas_price');
+            const cuotasValueElement = detailDiv.querySelector('#final_cuota_value');
+
+            // Elementos para la vista localizada (debajo de las opciones)
+            const localPriceOfferElement = detailDiv.querySelector('#local_final_offer_price');
+            const localCuotasPriceElement = detailDiv.querySelector('#local_final_cuotas_price');
+            const localCuotasValueElement = detailDiv.querySelector('#local_final_cuota_value');
+
+            const waButton = detailDiv.querySelector('.wa-button-detail');
+
+            // Actualizar precio principal (arriba)
+            if (priceOfferElement) priceOfferElement.textContent = formatPrice(finalPriceOffer);
+            if (priceCuotasElement) priceCuotasElement.textContent = formatPrice(finalPriceCuotas);
+            if (cuotasValueElement) cuotasValueElement.textContent = formatPrice(finalCuotaValue);
+
+            // Actualizar precio localizado (debajo de la personalización)
+            if (localPriceOfferElement) localPriceOfferElement.textContent = formatPrice(finalPriceOffer);
+            if (localCuotasPriceElement) localCuotasPriceElement.textContent = formatPrice(finalPriceCuotas);
+            if (localCuotasValueElement) localCuotasValueElement.textContent = formatPrice(finalCuotaValue);
+
+            // 6. ACTUALIZAR TABLA DE ESPECIFICACIONES TÉCNICAS
+            updateSpecsTable(product, diskSpec, monitorSpec, softwareSpec);
+
+            // 7. Actualizar Mensaje de WhatsApp
+            const upgradesText = upgradesDescription.length > 0 ? ` con la configuración personalizada: ${upgradesDescription.join(', ')}` : "";
+            const waMessage = `Hola, quiero COMPRAR el combo ${product.title}${upgradesText}. El precio final al contado/transferencia es $${formatPrice(finalPriceOffer)}.`;
+            if (waButton) waButton.setAttribute('onclick', `openWhatsApp('${waMessage}')`);
+
+            // Actualizar el botón de WhatsApp personalizado en la sección de personalización
+            const customWaButton = detailDiv.querySelector('#custom-wa-button');
+            if (customWaButton) customWaButton.setAttribute('onclick', `openWhatsApp('${waMessage}')`);
+        }
+
+
+        /**
+         * Crea y devuelve la tarjeta HTML para un producto, estilo MercadoLibre.
+         */
+        function renderProductCard(product) {
+            const offerPrice = Math.round(product.basePrice * 0.9);
+            const cuotaValue = Math.round(product.basePrice / 3);
+
+            const card = document.createElement('div');
+            card.className = 'product-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer';
+            card.setAttribute('onclick', `showProductDetail(${product.id})`);
+
+            const imagePlaceholder = `https://placehold.co/300x300/f8f9fa/6c757d?text=${product.title.replace(/ /g, '+')}`;
+
+            card.innerHTML = `
+                <!-- Imagen del producto -->
+                <div class="relative mb-3">
+                    <img
+                        src="${product.imageUrl}"
+                        alt="${product.title}"
+                        class="w-full h-48 object-cover rounded"
+                        onerror="this.onerror=null;this.src='${imagePlaceholder}';"
+                    />
+                    <div class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded font-bold">
+                        OFERTA
+                    </div>
                 </div>
-                <div id="chat-messages" class="chat-area">
-                    <!-- Mensajes aquí -->
-                </div>
-                <div class="input-area">
-                    <input type="text" id="message-input" placeholder="Escribe un mensaje...">
-                    <button id="send-button">Enviar</button>
+
+                <!-- Información del producto -->
+                <div class="flex-1">
+                    <h3 class="text-sm text-gray-900 mb-2 line-clamp-2 leading-tight font-medium">${product.title}</h3>
+
+                    <!-- Precio -->
+                    <div class="mb-2">
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-xl font-bold text-gray-900">$${formatPrice(offerPrice)}</span>
+                        </div>
+                        <div class="text-xs text-green-600 font-semibold">10% OFF</div>
+                    </div>
+
+                    <!-- Cuotas -->
+                    <div class="text-xs text-gray-600 mb-2">
+                        en 3x $${formatPrice(cuotaValue)} sin interés
+                    </div>
+
+                    <!-- Envío -->
+                    <div class="text-xs text-green-700 font-medium mb-2 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        Envío gratis a todo el país
+                    </div>
+
+                    <!-- Vendedor -->
+                    <div class="text-xs text-gray-500 mb-3">
+                        por <span class="font-medium text-blue-600">Compuya</span>
+                    </div>
+
+                    <!-- Botón de ver características -->
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200 text-sm mb-2" onclick="event.stopPropagation(); showProductDetail(${product.id});">
+                        Ver Características
+                    </button>
+
+                    <!-- Botón de compra -->
+                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200 text-sm" onclick="event.stopPropagation(); openWhatsApp('¡Hola! Quiero comprar el ${product.title} por $${formatPrice(offerPrice)}. ¿Me ayudás con la compra?');">
+                        Consultar por WhatsApp
+                    </button>
                 </div>
             `;
-            document.getElementById('send-button').addEventListener('click', handleSendMessage);
-            document.getElementById('message-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleSendMessage();
-                }
+            return card;
+        }
+
+        /**
+         * Muestra la vista de catálogo principal con todos los productos.
+         */
+        function renderCatalogView() {
+            // Muestra los elementos ocultos al volver al catálogo
+            mainHeader.classList.remove('hidden');
+            keyInfoSection.classList.remove('hidden');
+
+            catalogView.innerHTML = '';
+            products.forEach(product => {
+                catalogView.appendChild(renderProductCard(product));
             });
-            startChatListener();
-        };
+            dynamicTitle.textContent = "🔥 Los Mejores Combos Calidad-Precio del Mercado 🔥";
+        }
 
-        // Handles the logic for joining or creating a chat.
-        const handleJoinChat = async () => {
-            const chatKeyInput = document.getElementById('chat-key');
-            currentKey = chatKeyInput.value.trim().toLowerCase();
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = '';
+        /**
+         * Función para cambiar de la vista de detalle a la vista de catálogo.
+         */
+        function showCatalogView() {
+            detailView.classList.add('hidden');
+            catalogView.classList.remove('hidden');
+            dynamicTitle.classList.remove('hidden');
+            renderCatalogView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            if (!currentKey) {
-                errorMessage.textContent = 'Por favor, ingresa una palabra clave válida.';
+        /**
+         * Muestra la vista de detalle para un producto específico.
+         */
+        function showProductDetail(productId) {
+            console.log('showProductDetail called with', productId);
+            const product = products.find(p => p.id === productId);
+
+            if (!product) {
+                console.error("Producto no encontrado:", productId);
                 return;
             }
 
-            try {
-                // Use the chat key as the document ID for direct access.
-                const chatDocRef = doc(db, `artifacts/${appId}/public/data/chats`, currentKey);
-                const chatDocSnap = await getDoc(chatDocRef);
+            // OCULTA CABECERA Y SECCIÓN DE INFORMACIÓN CLAVE (SEGÚN REQUERIMIENTO)
+            mainHeader.classList.add('hidden');
+            keyInfoSection.classList.add('hidden');
 
-                if (!chatDocSnap.exists()) {
-                    // If the chat doesn't exist, create it.
-                    await setDoc(chatDocRef, {
-                        key: currentKey,
-                        createdAt: new Date()
-                    });
-                }
-                currentChatDocRef = chatDocRef;
-                renderChat();
-            } catch (e) {
-                console.error("Error al unirse o crear el chat:", e);
-                errorMessage.textContent = "Error al unirse al chat. Intenta de nuevo.";
+            catalogView.classList.add('hidden');
+            dynamicTitle.classList.add('hidden');
+            detailView.classList.remove('hidden');
+
+            const detailImagePlaceholder = `https://placehold.co/800x400/e0f2f1/042f2e?text=${product.title.replace(/ /g, '+')}`;
+
+            // Solo los combos 1 al 5 son personalizables porque los 6 y 7 ya vienen optimizados.
+            const isCustomizable = productId <= 5;
+
+            // Obtener las especificaciones iniciales para el primer render
+            const initialDiskSpec = product.specs.find(s => s.name === "Disco")?.value || "500 GB HDD";
+            const initialMonitorSpec = product.specs.find(s => s.name === "Monitor")?.value || '17" LCD';
+            const initialSoftwareSpec = product.specs.find(s => s.name === "Software")?.value || "Software Base";
+
+
+            let customizationHTML = '';
+            if (isCustomizable) {
+                // Obtenemos el ID del producto para pasarlo a la función de cálculo
+                const calculateFnCall = `calculateFinalPrice(products.find(p => p.id === ${productId}))`;
+
+                customizationHTML = `
+                    <div class="mt-8 pt-6 border-t border-blue-200 bg-blue-50 p-4 rounded-xl shadow-inner customization-section">
+                        <h4 class="text-2xl font-bold text-blue-800 mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37h.001z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Personaliza tu Combo
+                        </h4>
+
+                        <!-- 1. DISCO DURO MEJORA (Radio Buttons) -->
+                        <div class="mb-4 p-3 bg-white rounded-lg shadow-md border border-gray-100">
+                            <p class="font-bold text-gray-800 mb-2">Cambio de Disco por Mayor Velocidad (Estándar: ${initialDiskSpec}):</p>
+                            <div class="flex flex-col space-y-2 text-sm">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="disk_upgrade" value="none" checked onchange="${calculateFnCall}" class="form-radio text-green-600 h-5 w-5">
+                                    <span class="ml-2 font-semibold">Mantener Disco Estándar (${initialDiskSpec})</span>
+                                </label>
+                                <label class="inline-flex items-center text-blue-700">
+                                    <input type="radio" name="disk_upgrade" value="ssd_128" onchange="${calculateFnCall}" class="form-radio text-blue-600 h-5 w-5">
+                                    <span class="ml-2">Cambiar por <strong class="font-extrabold">128 GB SSD</strong> (+${formatPrice(UPGRADE_COSTS.SSD_128)}) - *¡PC Arranca en Segundos!*</span>
+                                </label>
+                                <label class="inline-flex items-center text-blue-700">
+                                    <input type="radio" name="disk_upgrade" value="ssd_256" onchange="${calculateFnCall}" class="form-radio text-blue-600 h-5 w-5">
+                                    <span class="ml-2">Cambiar por <strong class="font-extrabold">256 GB SSD</strong> (+${formatPrice(UPGRADE_COSTS.SSD_256)}) - *Máxima Capacidad y Velocidad*</span>
+                                </label>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <strong class="text-red-500">IMPORTANTE:</strong> Si eliges SSD en un combo i3/i5, se actualiza a **Windows 11**.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 2. MONITOR MEJORA (Checkbox) -->
+                        <div class="p-3 bg-white rounded-lg shadow-md border border-gray-100">
+                            <p class="font-bold text-gray-800 mb-2">Mejora de Tamaño de Monitor (Estándar ${initialMonitorSpec}):</p>
+                            <label class="inline-flex items-center text-orange-700">
+                                <input type="checkbox" id="monitor_upgrade" onchange="${calculateFnCall}" class="form-checkbox text-orange-600 h-5 w-5 rounded">
+                                <span class="ml-2">Cambiar por Monitor más grande <strong class="font-extrabold">19" LCD</strong> (+${formatPrice(UPGRADE_COSTS.MONITOR_19)})</span>
+                            </label>
+                        </div>
+
+                        <!-- SECCIÓN DE PRECIO LOCALIZADO PARA RESPONSIVE -->
+                        <div id="local_final_price_display" class="mt-5 p-3 rounded-xl border-2 border-red-500 bg-red-50 text-center price-display">
+                            <p class="text-xl font-bold text-gray-700">Precio Final Contado/Transferencia (10% OFF):</p>
+                            <p class="text-4xl font-extrabold text-red-700">$<span id="local_final_offer_price">${formatPrice(product.basePrice * 0.9)}</span></p>
+                            <p class="text-sm font-semibold text-blue-800 mt-1">
+                                Precio 3 Cuotas: $<span id="local_final_cuotas_price">${formatPrice(product.basePrice)}</span> | Cuota: $<span id="local_final_cuota_value">${formatPrice(Math.round(product.basePrice / 3))}</span>
+                            </p>
+                        </div>
+
+                        <!-- BOTÓN DE WHATSAPP CON PERSONALIZACIÓN -->
+                        <button id="custom-wa-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-6 rounded-lg shadow-lg transition duration-200 flex items-center justify-center mt-4">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13l-1.1 5M7 13l1.1-5"></path>
+                            </svg>
+                            Consultar por WhatsApp con Personalización
+                        </button>
+                    </div>
+                `;
             }
-        };
 
-        // Sets up the real-time listener for chat messages.
-        const startChatListener = () => {
-            if (!currentChatDocRef) {
-                console.error("No hay un documento de chat para escuchar.");
-                return;
-            }
+            // Contenido de la vista de detalle estilo MercadoLibre
+            // ESTE BLOQUE FUE MOVIDO FUERA DEL IF (isCustomizable)
+            productDetailContent.innerHTML = `
+                <!-- Galería de imágenes (izquierda) -->
+                <div class="md:w-2/5 mb-6 md:mb-0">
+                    <div class="sticky top-4">
+                        <!-- Imagen principal -->
+                        <div class="relative mb-4">
+                            <img
+                                src="${product.imageUrl.replace('400x200', '800x400')}"
+                                alt="${product.title}"
+                                class="w-full h-auto rounded-lg shadow-md border border-gray-200"
+                                onerror="this.onerror=null;this.src='${detailImagePlaceholder}';"
+                            />
+                            <div class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded font-bold">
+                                OFERTA
+                            </div>
+                        </div>
 
-            const messagesCollectionRef = collection(db, `${currentChatDocRef.path}/messages`);
-            const q = query(messagesCollectionRef); // No usar orderBy para evitar la necesidad de índices.
+                        <!-- Miniaturas (placeholder) -->
+                        <div class="flex space-x-2 overflow-x-auto">
+                            <img src="${product.imageUrl}" alt="Vista 1" class="w-16 h-16 object-cover rounded border-2 border-blue-500 cursor-pointer">
+                            <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">+3</div>
+                        </div>
 
-            onSnapshot(q, (snapshot) => {
-                const chatMessagesDiv = document.getElementById('chat-messages');
-                if (!chatMessagesDiv) return;
+                        <p class="text-xs text-gray-500 mt-2 text-center">La imagen es ilustrativa. Los componentes pueden variar ligeramente en marca según stock.</p>
+                    </div>
+                </div>
 
-                const messages = [];
-                snapshot.forEach(doc => {
-                    messages.push(doc.data());
-                });
+                <!-- Información del producto (derecha) -->
+                <div class="md:w-3/5 md:pl-8">
+                    <!-- Estado del producto -->
+                    <div class="flex items-center mb-2">
+                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        <span class="text-sm text-green-700 font-medium">Nuevo</span>
+                        <span class="mx-2 text-gray-300">|</span>
+                        <span class="text-sm text-gray-600">+1000 vendidos</span>
+                    </div>
 
-                // Ordenar mensajes en el cliente por el timestamp para garantizar el orden.
-                messages.sort((a, b) => {
-                    const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
-                    const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
-                    return timeA - timeB;
-                });
-                
-                displayMessages(messages);
-            });
-        };
+                    <!-- Título del producto -->
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">${product.title}</h1>
 
-        // Displays messages in the chat area.
-        const displayMessages = (messages) => {
-            const chatMessagesDiv = document.getElementById('chat-messages');
-            chatMessagesDiv.innerHTML = ''; // Limpia el área de mensajes
+                    <!-- Calificación y reseñas -->
+                    <div class="flex items-center mb-4">
+                        <div class="flex items-center mr-4">
+                            <div class="flex text-yellow-400">
+                                ★★★★★
+                            </div>
+                            <span class="text-sm text-gray-600 ml-1">(4.8)</span>
+                        </div>
+                        <span class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">23 opiniones</span>
+                    </div>
 
-            messages.forEach(msg => {
-                const isMine = msg.senderId === userId;
-                const messageClass = isMine ? 'mine' : 'other';
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message-box ${messageClass}`;
-                
-                const senderSpan = document.createElement('div');
-                senderSpan.className = 'sender';
-                senderSpan.textContent = isMine ? 'Tú' : 'Otro';
+                    <!-- Precio principal -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-baseline mb-2">
+                            <span class="text-4xl font-bold text-gray-900 mr-3">$<span id="final_offer_price">${formatPrice(product.basePrice * 0.9)}</span></span>
+                            <span class="ml-3 bg-green-100 text-green-800 text-sm px-2 py-1 rounded font-semibold">10% OFF</span>
+                        </div>
 
-                const contentP = document.createElement('p');
-                contentP.textContent = msg.text;
+                        <!-- Cuotas -->
+                        <div class="text-sm text-gray-700 mb-2">
+                            en <strong>3 cuotas de $<span id="final_cuota_value">${formatPrice(Math.round(product.basePrice / 3))}</span></strong> sin interés
+                        </div>
 
-                messageDiv.appendChild(senderSpan);
-                messageDiv.appendChild(contentP);
-                chatMessagesDiv.appendChild(messageDiv);
-            });
+                        <!-- Información de envío -->
+                        <div class="flex items-center text-sm text-green-700 font-medium mb-2">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Envío gratis a todo el país</span>
+                        </div>
 
-            // Scroll to the bottom of the chat area.
-            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-        };
+                        <!-- Stock -->
+                        <div class="text-sm text-gray-600">
+                            Stock disponible
+                        </div>
+                    </div>
 
-        // Handles sending a new message.
-        const handleSendMessage = async () => {
-            const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value.trim();
+                    <!-- Cantidad -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad:</label>
+                        <div class="flex items-center">
+                            <button class="border border-gray-300 px-3 py-1 rounded-l hover:bg-gray-50">-</button>
+                            <input type="number" value="1" min="1" class="border-t border-b border-gray-300 w-16 text-center py-1">
+                            <button class="border border-gray-300 px-3 py-1 rounded-r hover:bg-gray-50">+</button>
+                            <span class="ml-3 text-sm text-gray-600">disponibles</span>
+                        </div>
+                    </div>
 
-            if (messageText && currentChatDocRef) {
-                try {
-                    const messagesCollectionRef = collection(db, `${currentChatDocRef.path}/messages`);
-                    await addDoc(messagesCollectionRef, {
-                        text: messageText,
-                        senderId: userId,
-                        timestamp: new Date()
-                    });
-                    messageInput.value = '';
-                } catch (e) {
-                    console.error("Error al enviar el mensaje:", e);
-                }
-            }
-        };
+                    <!-- Botones de compra -->
+                    <div class="space-y-3 mb-8">
+                        <button class="wa-button-detail w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-6 rounded-lg shadow-lg transition duration-200 flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13l-1.1 5M7 13l1.1-5"></path>
+                            </svg>
+                            Consultar por WhatsApp
+                        </button>
+                    </div>
 
-        // Initialize the app on window load.
-        window.onload = initializeFirebase;
+                    <!-- Información del vendedor -->
+                    <div class="border-t pt-6 mb-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                C
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Compuya</div>
+                                <div class="text-sm text-gray-600">98.7% calificación positiva</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div>✓ Entrega a domicilio incluida</div>
+                            <div>✓ Garantía de 3 meses</div>
+                            <div>✓ Pago contra entrega disponible</div>
+                        </div>
+                    </div>
+
+                    ${customizationHTML}
+
+                    <!-- Descripción -->
+                    <div class="border-t pt-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Descripción</h3>
+                        <p class="text-gray-700 leading-relaxed mb-4">${product.description}</p>
+
+                        <!-- Características principales -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                            <h4 class="font-medium text-gray-900 mb-2">Características principales:</h4>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>• Procesador potente para tareas diarias</li>
+                                <li>• Memoria RAM suficiente para multitarea</li>
+                                <li>• Almacenamiento adecuado para tus archivos</li>
+                                <li>• Monitor de calidad para una buena experiencia visual</li>
+                                <li>• Software completo incluido</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Especificaciones técnicas -->
+                    <div class="border-t pt-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Especificaciones técnicas</h3>
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                            <ul id="product-detail-specs" class="divide-y divide-gray-200">
+                                <!-- Se poblará con JS llamando a updateSpecsTable -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Preguntas y respuestas -->
+                    <div class="border-t pt-6 mt-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Preguntas y respuestas</h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="font-medium text-gray-900 mb-1">¿Incluye instalación?</div>
+                                <div class="text-gray-700 text-sm">Sí, incluimos instalación completa sin costo adicional.</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="font-medium text-gray-900 mb-1">¿Qué garantía tiene?</div>
+                                <div class="text-gray-700 text-sm">Todos nuestros combos tienen 3 meses de garantía por escrito.</div>
+                            </div>
+                        </div>
+                        <button class="mt-3 text-blue-600 hover:text-blue-800 font-medium" onclick="openWhatsApp('Quiero consultar sobre el combo ${product.title}')">
+                            Ver todas las preguntas
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            console.log('Detail content set for product', productId);
+            // Inicializa el cálculo de precio para configurar el botón de WhatsApp y las specs iniciales
+            calculateFinalPrice(product);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializa la vista del catálogo al cargar la página
+        window.onload = renderCatalogView;
+
+        // Hace las funciones accesibles globalmente
+        window.showProductDetail = showProductDetail;
+        window.showCatalogView = showCatalogView;
+        window.openWhatsApp = openWhatsApp;
+        window.closeWarrantyModal = closeWarrantyModal;
+        window.openWarrantyModal = openWarrantyModal;
+        window.calculateFinalPrice = calculateFinalPrice; // Se hace global para el onchange en el HTML
     </script>
 </body>
+
 </html>
