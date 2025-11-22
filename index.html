@@ -76,21 +76,26 @@ body {
             background-size: cover;
             background-position: center center;
             border-bottom: 3px solid var(--color-rojo);
+            text-align: center;
         }
 
-        .logo-img {
-            width: 320px; /* Tamaño aumentado del logo */
-            height: auto;
-            margin-bottom: 25px;
-            /* Efecto de brillo sutil en el logo */
-            filter: drop-shadow(0 0 20px rgba(230,0,0,0.6));
-            border-radius: 12px;
-        }
+            .logo-img {
+                width: 500px !important; /* Tamaño aumentado del logo con !important */
+                height: auto;
+                margin-bottom: 25px;
+                /* Efecto de brillo sutil en el logo */
+                filter: drop-shadow(0 0 20px rgba(230,0,0,0.6));
+                border-radius: 12px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
 
         #hero h1 {
             font-size: 3.6rem;
             margin-bottom: 15px;
             line-height: 1.1;
+            text-align: center;
         }
         #hero h1 span { color: var(--color-plata); }
 
@@ -99,6 +104,9 @@ body {
             margin-bottom: 35px;
             max-width: 600px;
             color: var(--color-plata);
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* --- SECCIÓN DE SERVICIOS --- */
@@ -186,18 +194,23 @@ body {
             #hero {
                 display: flex;
                 flex-direction: column;
-                padding-top: 60px;
-                gap: 20px;
+                padding-top: 20px; /* reducido para mejor ajuste */
+                gap: 15px;
             }
-            #hero h1 { font-size: 2.5rem; }
+            #hero h1 { 
+                font-size: 2rem !important; /* reducido para mejor lectura */
+                margin-bottom: 10px;
+            }
             #hero p {
-                font-size: 1.1rem;
-                padding: 0 20px;
+                font-size: 1rem !important;
+                padding: 0 10px;
+                max-width: 100% !important;
             }
             .section-title { font-size: 2rem; }
             .logo-img {
-                width: 200px;
-                margin: 0 auto 10px auto;
+                width: 300px !important; /* aumentado para mejor visibilidad */
+                height: auto;
+                margin: 0 auto 15px auto;
                 filter: drop-shadow(0 0 10px rgba(230, 0, 0, 0.5));
                 border-radius: 8px;
             }
