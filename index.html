@@ -1,329 +1,341 @@
+a
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LÍDER COMPUTACIÓN | Servicio Técnico Experto en Ezeiza</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Chat Privado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- ESTILOS CSS (El diseño visual) --- */
-        :root {
-            --color-rojo: #E60000; /* Rojo intenso del logo */
-            --color-plata: #C0C0C0; /* Color metálico */
-            --fondo-oscuro: #121212; /* Fondo principal */
-            --fondo-tarjeta: #1E1E1E; /* Fondo de secciones */
-            --texto-blanco: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html { scroll-behavior: smooth; }
-
-body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--fondo-oscuro);
-            color: var(--texto-blanco);
-            line-height: 1.6;
-            text-align: center;
-        }
-
-        /* Tipografía y Utilidades */
-        h1, h2, h3 {
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        .resaltado-rojo { color: var(--color-rojo); }
-        .container { width: 90%; max-width: 1200px; margin: auto; padding: 20px 0; }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: var(--color-rojo);
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 5px;
-            transition: 0.3s;
-            border: 2px solid var(--color-rojo);
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: transparent;
-            color: var(--color-rojo);
-            box-shadow: 0 0 15px rgba(230, 0, 0, 0.5);
-        }
-
-        /* --- HEADER / PORTADA --- */
-        #hero {
-            min-height: 60vh; /* Reducida Altura para evitar mucho espacio vacío */
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 40px;
-            justify-content: center;
-            align-items: center;
-            padding: 20px 20px 40px 20px; /* Menor padding superior para menos espacio vacío */
-            /* Imagen de fondo técnica y oscura */
-            background: linear-gradient(rgba(18,18,18,0.85), rgba(18,18,18,0.95)), url('https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1074&q=80');
-            background-size: cover;
-            background-position: center center;
-            border-bottom: 3px solid var(--color-rojo);
-            text-align: center;
-        }
-
-            .logo-img {
-                width: 500px !important; /* Tamaño aumentado del logo con !important */
-                height: auto;
-                margin-bottom: 25px;
-                /* Efecto de brillo sutil en el logo */
-                filter: drop-shadow(0 0 20px rgba(230,0,0,0.6));
-                border-radius: 12px;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-        #hero h1 {
-            font-size: 3.6rem;
-            margin-bottom: 15px;
-            line-height: 1.1;
-            text-align: center;
-        }
-        #hero h1 span { color: var(--color-plata); }
-
-        #hero p {
-            font-size: 1.3rem;
-            margin-bottom: 35px;
-            max-width: 600px;
-            color: var(--color-plata);
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- SECCIÓN DE SERVICIOS --- */
-        #servicios {
-            padding: 80px 0;
-        }
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 50px;
-        }
-        .servicios-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            align-items: stretch;
-            text-align: left;
-        }
-        .servicio-card {
-            background-color: var(--fondo-tarjeta);
-            padding: 40px;
-            border-radius: 10px;
-            border-top: 4px solid var(--color-rojo);
-            transition: transform 0.3s, box-shadow 0.3s;
-            height: 100%;
-            text-align: left;
-        }
-        .servicio-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-        .icon-box {
-            font-size: 3rem;
-            color: var(--color-rojo);
-            margin-bottom: 20px;
-        }
-        .servicio-card h3 { margin-bottom: 15px; font-size: 1.4rem; }
-        .servicio-card p { color: #ccc; font-size: 0.95rem; }
-
-        /* --- SECCIÓN DE CONFIANZA --- */
-        #nosotros {
-            background-color: var(--fondo-tarjeta);
-            padding: 70px 0;
-            text-align: center;
-            border-top: 1px solid #333;
-            border-bottom: 1px solid #333;
-        }
-
-        /* --- FOOTER / CONTACTO --- */
-        footer {
-            background-color: #0a0a0a;
-            padding: 60px 0 30px;
-            text-align: center;
-            margin-top: auto;
-        }
-        .contacto-box {
-            background-color: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 30px;
-        }
-        .contacto-info p {
-            margin: 15px 0;
-            font-size: 1.1rem;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
         }
-        .contacto-info i {
-            color: var(--color-rojo);
-            margin-right: 15px;
-            font-size: 1.3rem;
-            width: 25px;
+        .container {
+            background-color: #2a2a4a;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        .copyright {
-            margin-top: 50px;
+        .header {
+            background-color: #16162a;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #3a3a5a;
+        }
+        .chat-area {
+            flex-grow: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 70vh;
+            gap: 0.75rem;
+        }
+        .message-box {
+            background-color: #3a3a5a;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message-box.mine {
+            background-color: #5b21b6;
+            align-self: flex-end;
+        }
+        .message-box.other {
+            background-color: #4338ca;
+            align-self: flex-start;
+        }
+        .sender {
             font-size: 0.8rem;
-            color: #666;
-            border-top: 1px solid #222;
-            padding-top: 20px;
+            color: #a0a0b0;
+            margin-bottom: 0.25rem;
         }
-
-        /* --- Responsive para celulares --- */
-        @media (max-width: 768px) {
-            #hero {
-                display: flex;
-                flex-direction: column;
-                padding-top: 20px; /* reducido para mejor ajuste */
-                gap: 15px;
-            }
-            #hero h1 { 
-                font-size: 2rem !important; /* reducido para mejor lectura */
-                margin-bottom: 10px;
-            }
-            #hero p {
-                font-size: 1rem !important;
-                padding: 0 10px;
-                max-width: 100% !important;
-            }
-            .section-title { font-size: 2rem; }
-            .logo-img {
-                width: 300px !important; /* aumentado para mejor visibilidad */
-                height: auto;
-                margin: 0 auto 15px auto;
-                filter: drop-shadow(0 0 10px rgba(230, 0, 0, 0.5));
-                border-radius: 8px;
-            }
-            .contacto-info p {
-                flex-direction: column;
-                margin-bottom: 25px;
-            }
-            .contacto-info i {
-                margin-bottom: 10px;
-                margin-right: 0;
-            }
+        .input-area {
+            display: flex;
+            padding: 1rem;
+            border-top: 2px solid #3a3a5a;
+            background-color: #2a2a4a;
         }
-        /* Ajustes para vista PC para mejorar diseño y evitar espacio vacío y mejorar texto */
-        @media (min-width: 769px) {
-            #hero {
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: center !important;
-                align-items: center !important;
-                padding: 40px 0 !important;
-            }
-            .logo-img {
-                width: 280px !important;
-                margin-bottom: 25px !important;
-                filter: drop-shadow(0 0 15px rgba(230, 0, 0, 0.7)) !important;
-                border-radius: 10px !important;
-            }
-            #hero h1 {
-                font-size: 3rem !important;
-                margin-bottom: 15px !important;
-                line-height: 1.2 !important;
-            }
-            #hero p {
-                font-size: 1.2rem !important;
-                margin-bottom: 30px !important;
-                max-width: 700px !important;
-                color: var(--color-plata) !important;
-            }
+        .input-area input {
+            flex-grow: 1;
+            background-color: #1a1a2e;
+            border: 1px solid #4a4a6a;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            color: white;
+            outline: none;
+        }
+        .input-area button {
+            background-color: #6d28d9;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .input-area button:hover {
+            background-color: #5b21b6;
+        }
+        .form-area {
+            padding: 2rem;
+            text-align: center;
+        }
+        .form-area input {
+            background-color: #1a1a2e;
+            border: 1px solid #4a4a6a;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            color: white;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        .form-area button {
+            background-color: #4338ca;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .form-area button:hover {
+            background-color: #312e81;
+        }
+        .error-message {
+            color: #fca5a5;
+            margin-top: 1rem;
+        }
+        .user-id-display {
+            font-size: 0.8rem;
+            color: #a0a0b0;
+            text-align: center;
+            padding: 0.5rem 0;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
 
-    <header id="hero">
-        <div class="container">
-            <img src="logo.png" alt="Líder Computación Logo" class="logo-img">
-            
-            <h1>TU TECNOLOGÍA, <br> EN MANOS <span class="resaltado-rojo">EXPERTAS</span></h1>
-            <p>Soluciones informáticas profesionales. Reparación, venta y soporte con confianza total.</p>
-            
-            <a href="https://wa.me/5491151258109" target="_blank" class="btn">
-                <i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp
-            </a>
-        </div>
-    </header>
+    <div id="app" class="container">
+        <!-- Contenido de la aplicación -->
+    </div>
 
-    <section id="servicios" class="container">
-        <h2 class="section-title">NUESTROS <span class="resaltado-rojo">SERVICIOS</span></h2>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase configuration, provided by the Canvas environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let userId = null;
+        const appDiv = document.getElementById('app');
+        let currentKey = '';
+        let currentChatDocRef = null;
+
+        // Renders a generic error message.
+        const renderError = (message) => {
+            appDiv.innerHTML = `<p class="error-message text-center p-8">${message}</p>`;
+        };
+
+        // Initializes Firebase and handles user authentication.
+        const initializeFirebase = async () => {
+            try {
+                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
+                    renderError("Error: La configuración de Firebase no está disponible. Por favor, asegúrate de que el entorno la proporcione.");
+                    return;
+                }
+                
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authenticate user with custom token or anonymously.
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                renderForm();
+            } catch (e) {
+                console.error("Error al inicializar Firebase o al autenticar:", e);
+                renderError("Hubo un error al iniciar el chat. Por favor, intenta de nuevo más tarde. (auth/invalid-api-key)");
+            }
+        };
         
-        <div class="servicios-grid">
-            <div class="servicio-card">
-                <div class="icon-box"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                <h3>REPARACIÓN Y ACTUALIZACIÓN</h3>
-                <p>Diagnóstico preciso y reparación de PCs y Notebooks. Potenciamos tu equipo con componentes de calidad para que vuele.</p>
-            </div>
-            <div class="servicio-card">
-                <div class="icon-box"><i class="fa-solid fa-cart-shopping"></i></div>
-                <h3>VENTA DE EQUIPOS</h3>
-                <p>Computadoras armadas a medida según tu presupuesto y necesidades (Gamer, Hogar, Oficina). Asesoramiento personalizado.</p>
-            </div>
-            <div class="servicio-card">
-                <div class="icon-box"><i class="fa-solid fa-building-user"></i></div>
-                <h3>SERVICIO A EMPRESAS Y COLEGIOS</h3>
-                <p>Soporte técnico integral para instituciones. Mantenimiento preventivo, redes y soluciones rápidas in-situ o remotas.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="nosotros">
-        <div class="container">
-             <h2 style="margin-bottom: 25px; font-size: 2rem;">¿POR QUÉ ELEGIRNOS?</h2>
-             <p style="max-width: 800px; margin: auto; color: #ccc; font-size: 1.1rem;">En <strong>LÍDER COMPUTACIÓN</strong>, el trato es directo y personal. Ofrecemos diagnósticos honestos, precios claros y un compromiso total con la solución de tu problema. Tu confianza es nuestro principal activo.</p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 30px;">CONTACTO Y UBICACIÓN</h2>
-            
-            <div class="contacto-box">
-                <div class="contacto-info">
-                    <p>
-                        <i class="fa-brands fa-whatsapp"></i> 
-                        <span>WhatsApp: <strong>11 5125-8109</strong></span>
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-location-dot"></i> 
-                        <span>Dirección: <strong>Emilio Mitre 585, 1° Piso, Ezeiza</strong></span>
-                    </p>
-                    <p>
-                        <i class="fa-regular fa-clock"></i> 
-                        <span>Horario: Lunes a Sábados de 9hs a 18hs. Tenemos soporte remoto en casos de emergencia 24hs</span>
-                    </p>
+        // Renders the initial form to enter the chat key.
+        const renderForm = () => {
+            appDiv.innerHTML = `
+                <div class="form-area">
+                    <h1 class="text-3xl font-bold mb-4">Chat Privado</h1>
+                    <p class="mb-4 text-sm text-gray-400">Para iniciar o unirte a un chat, ingresa una palabra clave.</p>
+                    <input type="text" id="chat-key" placeholder="Ingresa la palabra clave" class="rounded-lg px-4 py-2 w-full text-center">
+                    <button id="join-chat-btn" class="mt-4">Unirse al Chat</button>
+                    <div class="user-id-display">ID de usuario: <span id="user-id-text">${userId}</span></div>
+                    <p id="error-message" class="error-message"></p>
                 </div>
+            `;
+            document.getElementById('join-chat-btn').addEventListener('click', handleJoinChat);
+        };
 
-                <a href="https://wa.me/5491151258109" target="_blank" class="btn" style="margin-top: 20px;">
-                    <i class="fa-regular fa-comment-dots"></i> Enviar Mensaje Ahora
-                </a>
-            </div>
+        // Renders the main chat interface.
+        const renderChat = () => {
+            appDiv.innerHTML = `
+                <div class="header">
+                    <h2 class="text-2xl font-bold">Chat: ${currentKey}</h2>
+                    <div class="user-id-display">ID de usuario: <span id="user-id-text">${userId}</span></div>
+                </div>
+                <div id="chat-messages" class="chat-area">
+                    <!-- Mensajes aquí -->
+                </div>
+                <div class="input-area">
+                    <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+                    <button id="send-button">Enviar</button>
+                </div>
+            `;
+            document.getElementById('send-button').addEventListener('click', handleSendMessage);
+            document.getElementById('message-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+            startChatListener();
+        };
 
-            <p class="copyright">&copy; 2023 Líder Computación - Ezeiza, Argentina. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+        // Handles the logic for joining or creating a chat.
+        const handleJoinChat = async () => {
+            const chatKeyInput = document.getElementById('chat-key');
+            currentKey = chatKeyInput.value.trim().toLowerCase();
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = '';
 
+            if (!currentKey) {
+                errorMessage.textContent = 'Por favor, ingresa una palabra clave válida.';
+                return;
+            }
+
+            try {
+                // Use the chat key as the document ID for direct access.
+                const chatDocRef = doc(db, `artifacts/${appId}/public/data/chats`, currentKey);
+                const chatDocSnap = await getDoc(chatDocRef);
+
+                if (!chatDocSnap.exists()) {
+                    // If the chat doesn't exist, create it.
+                    await setDoc(chatDocRef, {
+                        key: currentKey,
+                        createdAt: new Date()
+                    });
+                }
+                currentChatDocRef = chatDocRef;
+                renderChat();
+            } catch (e) {
+                console.error("Error al unirse o crear el chat:", e);
+                errorMessage.textContent = "Error al unirse al chat. Intenta de nuevo.";
+            }
+        };
+
+        // Sets up the real-time listener for chat messages.
+        const startChatListener = () => {
+            if (!currentChatDocRef) {
+                console.error("No hay un documento de chat para escuchar.");
+                return;
+            }
+
+            const messagesCollectionRef = collection(db, `${currentChatDocRef.path}/messages`);
+            const q = query(messagesCollectionRef); // No usar orderBy para evitar la necesidad de índices.
+
+            onSnapshot(q, (snapshot) => {
+                const chatMessagesDiv = document.getElementById('chat-messages');
+                if (!chatMessagesDiv) return;
+
+                const messages = [];
+                snapshot.forEach(doc => {
+                    messages.push(doc.data());
+                });
+
+                // Ordenar mensajes en el cliente por el timestamp para garantizar el orden.
+                messages.sort((a, b) => {
+                    const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                    const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                    return timeA - timeB;
+                });
+                
+                displayMessages(messages);
+            });
+        };
+
+        // Displays messages in the chat area.
+        const displayMessages = (messages) => {
+            const chatMessagesDiv = document.getElementById('chat-messages');
+            chatMessagesDiv.innerHTML = ''; // Limpia el área de mensajes
+
+            messages.forEach(msg => {
+                const isMine = msg.senderId === userId;
+                const messageClass = isMine ? 'mine' : 'other';
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-box ${messageClass}`;
+                
+                const senderSpan = document.createElement('div');
+                senderSpan.className = 'sender';
+                senderSpan.textContent = isMine ? 'Tú' : 'Otro';
+
+                const contentP = document.createElement('p');
+                contentP.textContent = msg.text;
+
+                messageDiv.appendChild(senderSpan);
+                messageDiv.appendChild(contentP);
+                chatMessagesDiv.appendChild(messageDiv);
+            });
+
+            // Scroll to the bottom of the chat area.
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        };
+
+        // Handles sending a new message.
+        const handleSendMessage = async () => {
+            const messageInput = document.getElementById('message-input');
+            const messageText = messageInput.value.trim();
+
+            if (messageText && currentChatDocRef) {
+                try {
+                    const messagesCollectionRef = collection(db, `${currentChatDocRef.path}/messages`);
+                    await addDoc(messagesCollectionRef, {
+                        text: messageText,
+                        senderId: userId,
+                        timestamp: new Date()
+                    });
+                    messageInput.value = '';
+                } catch (e) {
+                    console.error("Error al enviar el mensaje:", e);
+                }
+            }
+        };
+
+        // Initialize the app on window load.
+        window.onload = initializeFirebase;
+    </script>
 </body>
 </html>
