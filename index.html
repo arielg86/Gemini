@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LÍDER COMPUTACIÓN | Servicio Técnico Experto en Ezeiza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -250,6 +252,150 @@ body {
                 color: var(--color-plata) !important;
             }
         }
+
+        /* Estilos personalizados para el tema oscuro y efectos */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Fondo oscuro principal */
+            padding: 0.75rem 0;
+            margin: 0;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .sr-only.focus:not(.sr-only) {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: inherit;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+        .container-center {
+            /* Mantiene la adaptabilidad móvil y centra el contenido */
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .product-card {
+            /* Efecto de levitación y sombra al pasar el ratón */
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .product-card:hover, .product-card:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 200, 255, 0.2);
+            border-color: #06b6d4; /* Color cian de Tailwind para el borde en hover */
+            outline: 2px solid #06b6d4;
+        }
+        /* Estilos para el Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 95%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
+        }
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        .close-button {
+            font-size: 2.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        .promo-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #f87171; /* Rojo Tailwind 500 */
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 0 0.75rem 0 0.75rem;
+            z-index: 10;
+        }
+        .benefit-card {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .benefit-card:hover {
+            transform: translateY(-2px);
+        }
+        @media (max-width: 640px) {
+            .benefit-card {
+                padding: 0.75rem;
+                margin: 0.25rem 0;
+            }
+        }
+        /* Mejoras para móvil */
+        @media (max-width: 768px) {
+            .product-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            .product-card img {
+                height: 120px;
+            }
+            .product-card h3 {
+                font-size: 1rem;
+            }
+            .product-card button {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+            .detail-view-mobile {
+                padding: 1rem;
+            }
+            .customization-section {
+                padding: 1rem;
+            }
+            .customization-section h4 {
+                font-size: 1.25rem;
+            }
+            .price-display {
+                font-size: 1.5rem;
+            }
+        }
+
+
     </style>
 </head>
 <body>
@@ -296,6 +442,87 @@ body {
         </div>
     </section>
 
+    <section id="ofertas" class="container">
+        <h2 class="section-title">NUESTRAS <span class="resaltado-rojo">OFERTAS</span></h2>
+        <p style="text-align: center; color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">Las imágenes son ilustrativas</p>
+
+        <!-- Vista del Catálogo -->
+        <div id="catalog-view" class="container-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Los productos se cargarán dinámicamente aquí -->
+            </div>
+        </div>
+
+        <!-- Vista de Detalles del Producto -->
+        <div id="detail-view" class="hidden">
+            <div class="container-center">
+                <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800" id="product-title"></h2>
+                        <button id="back-to-catalog" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            <i class="fas fa-arrow-left mr-2"></i>Volver al Catálogo
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <img id="product-image" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
+                            <div id="specs-grid" class="grid grid-cols-2 gap-4">
+                                <div class="benefit-card">
+                                    <h4 class="font-semibold text-lg mb-2">Procesador</h4>
+                                    <p id="product-processor" class="text-gray-600"></p>
+                                </div>
+                                <div class="benefit-card">
+                                    <h4 class="font-semibold text-lg mb-2">RAM</h4>
+                                    <p id="product-ram" class="text-gray-600"></p>
+                                </div>
+                                <div class="benefit-card">
+                                    <h4 class="font-semibold text-lg mb-2">Almacenamiento</h4>
+                                    <p id="product-storage" class="text-gray-600"></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="bg-gray-100 p-6 rounded-lg mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Precio y Oferta</h3>
+                                <div class="flex items-center mb-4">
+                                    <span class="text-lg text-gray-600 line-through mr-4" id="original-price"></span>
+                                    <span class="text-3xl font-bold text-red-600" id="offer-price"></span>
+                                </div>
+                                <p class="text-green-600 font-semibold mb-4">¡10% de descuento por pago contado/transferencia!</p>
+                                <button id="contact-whatsapp" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg w-full">
+                                    <i class="fab fa-whatsapp mr-2"></i>Contactar por WhatsApp
+                                </button>
+                            </div>
+
+                            <div class="bg-blue-50 p-6 rounded-lg">
+                                <h4 class="text-xl font-bold text-blue-800 mb-4">¿Por qué elegir este combo?</h4>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span id="benefit-1" class="text-gray-700"></span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span id="benefit-2" class="text-gray-700"></span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span id="benefit-3" class="text-gray-700"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
     <section id="nosotros">
         <div class="container">
              <h2 style="margin-bottom: 25px; font-size: 2rem;">¿POR QUÉ ELEGIRNOS?</h2>
@@ -306,19 +533,19 @@ body {
     <footer>
         <div class="container">
             <h2 class="section-title" style="font-size: 2rem; margin-bottom: 30px;">CONTACTO Y UBICACIÓN</h2>
-            
+
             <div class="contacto-box">
                 <div class="contacto-info">
                     <p>
-                        <i class="fa-brands fa-whatsapp"></i> 
+                        <i class="fa-brands fa-whatsapp"></i>
                         <span>WhatsApp: <strong>11 5125-8109</strong></span>
                     </p>
                     <p>
-                        <i class="fa-solid fa-location-dot"></i> 
-                        <span>Dirección: <strong>Canning</strong></span>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Dirección: <strong>Emilio Mitre 585, 1° Piso, Ezeiza</strong></span>
                     </p>
                     <p>
-                        <i class="fa-regular fa-clock"></i> 
+                        <i class="fa-regular fa-clock"></i>
                         <span>Horario: Lunes a Sábados de 9hs a 18hs. Tenemos soporte remoto en casos de emergencia 24hs</span>
                     </p>
                 </div>
@@ -332,6 +559,274 @@ body {
         </div>
     </footer>
 
-</body>
+    <script>
+        // Datos de productos
+        const products = [
+        {
+            id: 1,
+            title: "CPU Básica",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core2Duo",
+                ram: "4GB RAM",
+                storage: "500GB HDD",
+                monitor: "17\"",
+                originalPrice: 175000,
+                offerPrice: 130000,
+                benefits: [
+                    "Ideal para tareas básicas como navegación web y oficina",
+                    "Componentes confiables y duraderos",
+                    "Fácil de usar para principiantes",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 2,
+            title: "CPU Básica Plus",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core2Duo",
+                ram: "8GB RAM",
+                storage: "500GB HDD",
+                monitor: "17\"",
+                originalPrice: 215000,
+                offerPrice: 166000,
+                benefits: [
+                    "Mayor fluidez para multitarea básica",
+                    "Perfecto para estudiantes y hogar",
+                    "Excelente relación precio-rendimiento",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 3,
+            title: "CPU Intermedia",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core i3",
+                ram: "8GB RAM",
+                storage: "500GB HDD",
+                monitor: "17\"",
+                originalPrice: 245000,
+                offerPrice: 193000,
+                benefits: [
+                    "Procesador moderno con mejor rendimiento",
+                    "Adecuado para trabajo de oficina y estudio",
+                    "Actualizable para futuras necesidades",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 4,
+            title: "CPU Intermedia Avanzada",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core i3",
+                ram: "16GB RAM",
+                storage: "500GB HDD",
+                monitor: "17\"",
+                originalPrice: 275000,
+                offerPrice: 220000,
+                benefits: [
+                    "Configuración avanzada para usuarios exigentes",
+                    "Excelente para diseño gráfico básico",
+                    "Memoria suficiente para aplicaciones pesadas",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 5,
+            title: "CPU Profesional",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core i5",
+                ram: "8GB RAM",
+                storage: "500GB HDD",
+                monitor: "19\"",
+                originalPrice: 290000,
+                offerPrice: 233000,
+                benefits: [
+                    "Potencia profesional para tareas complejas",
+                    "Ideal para programadores y diseñadores",
+                    "Rendimiento consistente y confiable",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 6,
+            title: "CPU Profesional Completa",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core i5",
+                ram: "16GB RAM",
+                storage: "1TB HDD",
+                monitor: "19\"",
+                originalPrice: 330000,
+                offerPrice: 269000,
+                benefits: [
+                    "Configuración completa con periféricos incluidos",
+                    "Almacenamiento ampliado para más archivos",
+                    "Perfecto para uso profesional intensivo",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 7,
+            title: "CPU Premium",
+            image: "https://images.unsplash.com/photo-1689236673605-e5d95a9c450c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            processor: "Intel Core i5",
+                ram: "16GB RAM",
+                storage: "256GB SSD",
+                monitor: "19\"",
+                originalPrice: 410000,
+                offerPrice: 336000,
+                benefits: [
+                    "Tecnología SSD para arranque ultrarrápido",
+                    "Configuración premium para máxima productividad",
+                    "Rendimiento excepcional y velocidad",
+                    "Windows y Office completo instalados"
+                ]
+            },
+        {
+            id: 8,
+            title: "Monitor 17 pulgadas",
+            image: "https://http2.mlstatic.com/D_Q_NP_629156-MLA84394919387_052025-F.webp",
+            processor: "No incluido",
+            ram: "No incluido",
+            storage: "No incluido",
+            monitor: "17\"",
+            originalPrice: 45000,
+            offerPrice: 40000,
+            benefits: [
+                "Monitor de alta resolución",
+                "Ideal para oficina y hogar",
+                "Conexión fácil y rápida"
+            ]
+        },
+        {
+            id: 9,
+            title: "Monitor 19 pulgadas",
+            image: "https://5.imimg.com/data5/SELLER/Default/2022/11/PT/PY/WN/154631720/whatsapp-image-2022-11-15-at-15-21-50-1000x1000.jpeg",
+            processor: "No incluido",
+            ram: "No incluido",
+            storage: "No incluido",
+            monitor: "19\"",
+            originalPrice: 55000,
+            offerPrice: 50000,
+            benefits: [
+                "Pantalla amplia para mayor productividad",
+                "Calidad de imagen excepcional",
+                "Perfecto para gaming y trabajo"
+            ]
+        }
+        ];
 
+        // Función para formatear precios
+        function formatPrice(price) {
+            return '$' + price.toLocaleString('es-AR');
+        }
+
+        // Función para renderizar el catálogo
+        function renderCatalog() {
+            const catalogView = document.getElementById('catalog-view');
+            const grid = catalogView.querySelector('.grid');
+
+            grid.innerHTML = products.map(product => {
+                const objectFit = product.title.includes('Monitor') ? 'object-contain' : 'object-cover';
+                return `
+                <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden relative" data-product-id="${product.id}">
+                    <div class="promo-tag">10% OFF</div>
+                    <img src="${product.image}" alt="${product.title}" class="w-full h-48 ${objectFit}">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${product.title}</h3>
+                        ${!product.title.includes('Monitor') ? `
+                        <div class="space-y-1 text-sm text-gray-600 mb-4">
+                            <p><i class="fas fa-microchip mr-2"></i>${product.processor}</p>
+                            <p><i class="fas fa-memory mr-2"></i>${product.ram}</p>
+                            <p><i class="fas fa-hdd mr-2"></i>${product.storage}</p>
+                        </div>
+                        ` : ''}
+                        ${!product.title.includes('Monitor') ? '<p class="text-sm text-gray-600 mb-2">Windows y Office instalados</p>' : ''}
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-lg text-gray-500 line-through">${formatPrice(product.originalPrice)}</span>
+                                <span class="text-2xl font-bold text-red-600 ml-2">${formatPrice(product.offerPrice)}</span>
+                            </div>
+                        </div>
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mb-2" onclick="window.open('https://wa.me/5491151258109?text=${encodeURIComponent(`Hola, quiero consultar sobre el ${product.title}. Precio oferta: ${formatPrice(product.offerPrice)}`)}', '_blank')">
+                            <i class="fab fa-whatsapp mr-2"></i>Consultar por WhatsApp
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // Agregar event listeners a las tarjetas de producto
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const productId = parseInt(card.dataset.productId);
+                    showProductDetail(productId);
+                });
+            });
+
+
+        }
+
+        // Función para mostrar detalles del producto
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Actualizar elementos de la vista de detalle
+            document.getElementById('product-title').textContent = product.title;
+            document.getElementById('product-image').src = product.image;
+            document.getElementById('product-image').alt = product.title;
+            document.getElementById('product-processor').textContent = product.processor;
+            document.getElementById('product-ram').textContent = product.ram;
+            document.getElementById('product-storage').textContent = product.storage;
+            document.getElementById('product-monitor').textContent = `Monitor ${product.monitor}`;
+            document.getElementById('original-price').textContent = formatPrice(product.originalPrice);
+            document.getElementById('offer-price').textContent = formatPrice(product.offerPrice);
+
+            // Actualizar beneficios
+            document.getElementById('benefit-1').textContent = product.benefits[0];
+            document.getElementById('benefit-2').textContent = product.benefits[1];
+            document.getElementById('benefit-3').textContent = product.benefits[2];
+
+            // Configurar botón de WhatsApp
+            const whatsappButton = document.getElementById('contact-whatsapp');
+            const message = `Hola, quiero consultar sobre el ${product.title}. Precio oferta: ${formatPrice(product.offerPrice)}`;
+            whatsappButton.onclick = () => {
+                window.open(`https://wa.me/5491151258109?text=${encodeURIComponent(message)}`, '_blank');
+            };
+
+            // Mostrar/ocultar specs según si es monitor o no
+            const specsGrid = document.getElementById('specs-grid');
+            if (product.title.includes('Monitor')) {
+                specsGrid.style.display = 'none';
+            } else {
+                specsGrid.style.display = 'grid';
+            }
+
+            // Mostrar vista de detalle y ocultar catálogo
+            document.getElementById('catalog-view').classList.add('hidden');
+            document.getElementById('detail-view').classList.remove('hidden');
+
+            // Scroll suave hacia arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+
+        // Función para volver al catálogo
+        function backToCatalog() {
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('catalog-view').classList.remove('hidden');
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCatalog();
+
+            // Event listener para el botón de volver
+            document.getElementById('back-to-catalog').addEventListener('click', backToCatalog);
+        });
+    </script>
+
+<script src="frontend_image_search.js"></script>
+</body>
 </html>
